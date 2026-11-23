@@ -1,1193 +1,636 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUMINA FASHION - Trợ Lý AI Tư Vấn Thời Trang</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        cream: '#FAF9F6',
-                        charcoal: '#1A1A1A',
-                        brass: '#C5A059',
-                        brassDark: '#A6823E',
-                        sand: '#EFECE6'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Google Fonts: Inter & Playfair Display -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body {
-            background-color: #FAF9F6;
-            color: #1A1A1A;
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
-        /* Custom Scrollbar */
-        .chat-scroll::-webkit-scrollbar {
-            width: 5px;
-        }
-        .chat-scroll::-webkit-scrollbar-track {
-            background: #FAF9F6;
-        }
-        .chat-scroll::-webkit-scrollbar-thumb {
-            background: #D6D1C7;
-            border-radius: 10px;
-        }
-        .chat-scroll::-webkit-scrollbar-thumb:hover {
-            background: #C5A059;
-        }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        /* Typing indicator animation */
-        @keyframes bounceDot {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-        .dot-1 { animation: bounceDot 1.4s infinite ease-in-out both; animation-delay: -0.32s; }
-        .dot-2 { animation: bounceDot 1.4s infinite ease-in-out both; animation-delay: -0.16s; }
-        .dot-3 { animation: bounceDot 1.4s infinite ease-in-out both; }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(16px) scale(0.97); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .chat-animate {
-            animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LUMINA FASHION — Trợ Lý AI Tư Vấn Thời Trang</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #FAF9F6;
+      color: #1A1A1A;
+    }
+    .font-serif-luxury {
+      font-family: 'Cormorant Garamond', serif;
+    }
+    .chat-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .chat-scroll::-webkit-scrollbar-thumb {
+      background-color: #D6D3CD;
+      border-radius: 9999px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.25s ease-out forwards;
+    }
+  </style>
 </head>
-<body class="bg-cream text-charcoal antialiased selection:bg-brass/25 selection:text-charcoal">
+<body class="min-h-screen flex flex-col">
 
-    <!-- ==================== HEADER / THANH ĐIỀU HƯỚNG ==================== -->
-    <header class="sticky top-0 z-40 bg-cream/95 backdrop-blur-md border-b border-charcoal/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16 sm:h-20">
-                <!-- Logo Editorial Luxury -->
-                <a href="#" class="flex items-center gap-3 group">
-                    <div class="w-10 h-10 rounded-xl bg-charcoal text-brass border border-brass/40 flex items-center justify-center font-serif text-xl font-bold shadow-xs group-hover:bg-brass group-hover:text-charcoal transition">
-                        L
-                    </div>
-                    <div>
-                        <span class="font-serif text-xl sm:text-2xl font-bold tracking-[0.14em] text-charcoal">LUMINA</span>
-                        <span class="block text-[10px] tracking-[0.28em] text-brassDark uppercase -mt-1 font-medium">Atelier & AI Stylist</span>
-                    </div>
-                </a>
-
-                <!-- Menu điều hướng Desktop -->
-                <nav class="hidden lg:flex items-center space-x-8 text-xs uppercase tracking-widest font-medium text-charcoal/75">
-                    <a href="#new-collection" class="hover:text-brassDark transition">Bộ Sưu Tập</a>
-                    <a href="#products" class="hover:text-brassDark transition">Danh Mục (8)</a>
-                    <a href="#size-guide" class="hover:text-brassDark transition">Bảng Size</a>
-                    <a href="#policies" class="hover:text-brassDark transition">Chính Sách</a>
-                </nav>
-
-                <!-- Nút chức năng & Hồ sơ Dự án -->
-                <div class="flex items-center gap-2 sm:gap-3">
-                    <button onclick="openConfigModal()" class="flex items-center gap-1.5 px-3 sm:px-4 py-2 text-xs font-semibold text-charcoal bg-sand hover:bg-brass/20 border border-brass/40 rounded-xl transition cursor-pointer" title="Xem Kiến trúc, Prompt, Bảng dữ liệu & Hướng dẫn xuất bản link">
-                        <i data-lucide="folder-kanban" class="w-4 h-4 text-brassDark"></i>
-                        <span class="hidden sm:inline">Hồ sơ Dự án & Prompt</span>
-                        <span class="sm:hidden">Hồ sơ & Link</span>
-                    </button>
-                    <button onclick="toggleChat(true)" class="flex items-center gap-1.5 px-3.5 sm:px-4 py-2 text-xs font-semibold text-cream bg-charcoal hover:bg-brassDark rounded-xl shadow-xs transition cursor-pointer">
-                        <i data-lucide="sparkles" class="w-4 h-4 text-brass"></i>
-                        <span>AI Stylist</span>
-                    </button>
-                </div>
-            </div>
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 bg-[#FAF9F6]/90 backdrop-blur-md border-b border-[#E8E4DC]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-[#1A1A1A] text-[#C5A059] flex items-center justify-center font-serif-luxury text-xl font-bold rounded">
+          L
         </div>
-    </header>
-
-    <!-- ==================== HERO BANNER EDITORIAL LUXURY ==================== -->
-    <section id="new-collection" class="relative overflow-hidden bg-charcoal text-cream border-b border-brass/20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-                <div class="lg:col-span-7 space-y-6">
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-brass/40 text-brass text-xs font-medium tracking-widest uppercase">
-                        <span class="w-2 h-2 rounded-full bg-brass animate-pulse"></span>
-                        Autumn / Winter Editorial 2026
-                    </div>
-                    <h1 class="font-serif text-3xl sm:text-5xl lg:text-6xl font-semibold leading-[1.15] tracking-tight">
-                        Vẻ Đẹp Tinh Giản, <br/>
-                        <span class="text-brass italic font-normal">Định Hình Bởi Trợ Lý AI</span>
-                    </h1>
-                    <p class="text-cream/75 text-sm sm:text-base max-w-2xl leading-relaxed font-light">
-                        Trải nghiệm mua sắm thời trang cao cấp kết hợp công nghệ trí tuệ nhân tạo. Trò chuyện trực tiếp với <strong>Lumina AI Stylist</strong> để được phân tích số đo, chọn size chuẩn xác và gợi ý phối đồ cá nhân hóa từ bộ sưu tập độc quyền.
-                    </p>
-                    <div class="flex flex-wrap items-center gap-3.5 pt-2">
-                        <a href="#products" class="px-6 py-3.5 bg-brass text-charcoal font-semibold text-xs uppercase tracking-wider rounded-xl hover:bg-cream transition shadow-md">
-                            Khám Phá Bộ Sưu Tập
-                        </a>
-                        <button onclick="openChatWithPrompt('Tư vấn size cho người 1m62, 52kg và gợi ý giúp mình 1 set đồ đi làm thanh lịch nhé!')" class="px-6 py-3.5 bg-white/10 hover:bg-white/15 border border-white/20 text-cream font-semibold text-xs uppercase tracking-wider rounded-xl transition flex items-center gap-2 cursor-pointer">
-                            <i data-lucide="message-square-sparkles" class="w-4 h-4 text-brass"></i>
-                            <span>Trò Chuyện Với Stylist</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Card Thống kê & Demo nhanh -->
-                <div class="lg:col-span-5">
-                    <div class="bg-white/[0.04] backdrop-blur-md border border-brass/30 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
-                        <div class="flex items-center justify-between border-b border-white/10 pb-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-11 h-11 rounded-2xl bg-brass/20 border border-brass/40 flex items-center justify-center text-brass">
-                                    <i data-lucide="bot" class="w-6 h-6"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-serif font-semibold text-lg text-cream">Lumina AI Stylist</h3>
-                                    <p class="text-xs text-brass">Trực tuyến 24/7 • Gemini Engine</p>
-                                </div>
-                            </div>
-                            <span class="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-[11px] font-medium">
-                                Sẵn sàng
-                            </span>
-                        </div>
-                        <ul class="space-y-3.5 text-xs sm:text-sm text-cream/85">
-                            <li class="flex items-start gap-3">
-                                <i data-lucide="check" class="w-4 h-4 text-brass shrink-0 mt-0.5"></i>
-                                <span><strong>Tư vấn size thông minh:</strong> Phân tích chiều cao, cân nặng & phom dáng (S – XL).</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i data-lucide="check" class="w-4 h-4 text-brass shrink-0 mt-0.5"></i>
-                                <span><strong>Thẻ sản phẩm trực quan:</strong> Tự động hiển thị hình ảnh, giá & nút đặt nhanh ngay trong khung chat.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i data-lucide="check" class="w-4 h-4 text-brass shrink-0 mt-0.5"></i>
-                                <span><strong>Sẵn sàng xuất bản:</strong> Độc lập 1 file duy nhất, dễ dàng tạo link chia sẻ công khai.</span>
-                            </li>
-                        </ul>
-                        <div class="pt-1">
-                            <button onclick="openConfigModal('deploy')" class="w-full py-2.5 px-4 rounded-xl bg-brass/15 hover:bg-brass/25 border border-brass/40 text-brass text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer">
-                                <i data-lucide="globe" class="w-4 h-4"></i>
-                                <span>Hướng dẫn tạo link công khai để gửi</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div>
+          <span class="font-serif-luxury text-2xl font-bold tracking-wider text-[#1A1A1A]">LUMINA</span>
+          <span class="hidden sm:inline-block text-xs uppercase tracking-[0.2em] text-[#7A756D] ml-2">Atelier & AI Stylist</span>
         </div>
-    </section>
+      </div>
 
-    <!-- ==================== DANH SÁCH 8 SẢN PHẨM THỜI TRANG ==================== -->
-    <section id="products" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-5">
-            <div>
-                <span class="text-xs font-semibold uppercase tracking-[0.2em] text-brassDark">Curated Collection</span>
-                <h2 class="font-serif text-2xl sm:text-4xl font-semibold text-charcoal mt-1.5">Danh Mục Thiết Kế Độc Quyền</h2>
-            </div>
-            <!-- Bộ lọc danh mục -->
-            <div class="flex flex-wrap gap-2" id="category-filters">
-                <button onclick="filterProducts('all')" class="filter-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-charcoal text-cream transition cursor-pointer" data-cat="all">Tất cả (8)</button>
-                <button onclick="filterProducts('Áo')" class="filter-btn px-4 py-2 rounded-xl text-xs font-medium bg-white text-charcoal/75 border border-charcoal/15 hover:border-brass transition cursor-pointer" data-cat="Áo">Áo & Blazer</button>
-                <button onclick="filterProducts('Quần & Chân váy')" class="filter-btn px-4 py-2 rounded-xl text-xs font-medium bg-white text-charcoal/75 border border-charcoal/15 hover:border-brass transition cursor-pointer" data-cat="Quần & Chân váy">Quần & Chân Váy</button>
-                <button onclick="filterProducts('Đầm & Váy')" class="filter-btn px-4 py-2 rounded-xl text-xs font-medium bg-white text-charcoal/75 border border-charcoal/15 hover:border-brass transition cursor-pointer" data-cat="Đầm & Váy">Đầm & Váy</button>
-            </div>
-        </div>
-
-        <!-- Lưới hiển thị sản phẩm -->
-        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7">
-            <!-- Render tự động từ JS -->
-        </div>
-    </section>
-
-    <!-- ==================== BẢNG QUY ĐỔI SIZE & CHÍNH SÁCH ==================== -->
-    <section id="size-guide" class="bg-sand/60 border-t border-charcoal/10 py-14 sm:py-18">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Bảng Size -->
-                <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-charcoal/10 shadow-xs">
-                    <div class="flex items-center gap-2.5 mb-3">
-                        <i data-lucide="ruler" class="w-5 h-5 text-brassDark"></i>
-                        <h3 class="font-serif text-xl sm:text-2xl font-semibold text-charcoal">Bảng Quy Đổi Kích Cỡ Chuẩn</h3>
-                    </div>
-                    <p class="text-xs sm:text-sm text-charcoal/70 mb-5">Thông số tiêu chuẩn của LUMINA FASHION. Bạn có thể gửi chiều cao và cân nặng cho <strong>Lumina AI</strong> để được tư vấn size chuẩn xác nhất.</p>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs sm:text-sm">
-                            <thead>
-                                <tr class="border-b border-charcoal/15 text-charcoal font-semibold bg-cream">
-                                    <th class="py-3 px-3.5 rounded-tl-xl">Size</th>
-                                    <th class="py-3 px-3.5">Chiều cao (cm)</th>
-                                    <th class="py-3 px-3.5">Cân nặng (kg)</th>
-                                    <th class="py-3 px-3.5 rounded-tr-xl">Ngực / Eo (cm)</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-charcoal/10 text-charcoal/80">
-                                <tr>
-                                    <td class="py-3 px-3.5 font-bold text-charcoal">S</td>
-                                    <td class="py-3 px-3.5">150 – 158</td>
-                                    <td class="py-3 px-3.5">42 – 48</td>
-                                    <td class="py-3 px-3.5">82–85 / 64–67</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 px-3.5 font-bold text-charcoal">M</td>
-                                    <td class="py-3 px-3.5">156 – 164</td>
-                                    <td class="py-3 px-3.5">49 – 54</td>
-                                    <td class="py-3 px-3.5">86–89 / 68–71</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 px-3.5 font-bold text-charcoal">L</td>
-                                    <td class="py-3 px-3.5">162 – 170</td>
-                                    <td class="py-3 px-3.5">55 – 60</td>
-                                    <td class="py-3 px-3.5">90–93 / 72–75</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 px-3.5 font-bold text-charcoal">XL</td>
-                                    <td class="py-3 px-3.5">165 – 175</td>
-                                    <td class="py-3 px-3.5">61 – 68</td>
-                                    <td class="py-3 px-3.5">94–98 / 76–80</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Chính sách cửa hàng -->
-                <div id="policies" class="lg:col-span-5 bg-charcoal text-cream rounded-3xl p-6 sm:p-8 border border-brass/30 flex flex-col justify-between shadow-sm">
-                    <div>
-                        <div class="flex items-center gap-2.5 mb-4">
-                            <i data-lucide="shield-check" class="w-5 h-5 text-brass"></i>
-                            <h3 class="font-serif text-xl sm:text-2xl font-semibold text-cream">Đặc Quyền Khách Hàng</h3>
-                        </div>
-                        <ul class="space-y-4 text-xs sm:text-sm text-cream/80">
-                            <li class="flex gap-3">
-                                <span class="w-7 h-7 rounded-lg bg-brass/20 border border-brass/40 text-brass font-bold flex items-center justify-center shrink-0">01</span>
-                                <div>
-                                    <strong class="text-cream block">Đổi size miễn phí trong 7 ngày</strong>
-                                    Hỗ trợ đổi size hoặc đổi mẫu tận nơi nếu sản phẩm còn nguyên tem mác, chưa qua giặt ủi.
-                                </div>
-                            </li>
-                            <li class="flex gap-3">
-                                <span class="w-7 h-7 rounded-lg bg-brass/20 border border-brass/40 text-brass font-bold flex items-center justify-center shrink-0">02</span>
-                                <div>
-                                    <strong class="text-cream block">Freeship toàn quốc đơn từ 500.000đ</strong>
-                                    Giao hàng hỏa tốc 2–4 ngày, được kiểm tra chất liệu và phom dáng trước khi thanh toán.
-                                </div>
-                            </li>
-                            <li class="flex gap-3">
-                                <span class="w-7 h-7 rounded-lg bg-brass/20 border border-brass/40 text-brass font-bold flex items-center justify-center shrink-0">03</span>
-                                <div>
-                                    <strong class="text-cream block">Ưu đãi thành viên mới</strong>
-                                    Nhập mã <span class="text-brass font-semibold">LUMINA10</span> để nhận ưu đãi giảm ngay 10% cho đơn hàng đầu tiên.
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-cream/60">
-                        <span>Hotline: 1900 6868</span>
-                        <span>08:30 – 22:00 Hàng ngày</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ==================== FOOTER ==================== -->
-    <footer class="bg-charcoal text-cream/60 border-t border-white/10 py-10 text-xs sm:text-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-2.5">
-                <span class="font-serif text-lg font-bold text-cream tracking-widest">LUMINA FASHION</span>
-                <span>© 2026. Trợ Lý AI Tư Vấn Thời Trang.</span>
-            </div>
-            <div class="flex items-center gap-4">
-                <button onclick="openConfigModal('prompt')" class="text-brass hover:underline cursor-pointer">Hồ sơ Dự án & Prompt</button>
-                <span>•</span>
-                <button onclick="openConfigModal('deploy')" class="text-cream/80 hover:text-white underline cursor-pointer">Hướng dẫn xuất bản Link</button>
-            </div>
-        </div>
-    </footer>
-
-    <!-- ==================== MODAL CHI TIẾT SẢN PHẨM & ĐẶT NHANH ==================== -->
-    <div id="product-modal" class="fixed inset-0 z-50 hidden bg-charcoal/70 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-cream rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-brass/30 chat-animate">
-            <div class="grid grid-cols-1 sm:grid-cols-12">
-                <div class="sm:col-span-5 bg-sand relative aspect-[3/4] sm:aspect-auto">
-                    <img id="modal-prod-img" src="" alt="" class="w-full h-full object-cover" />
-                    <span id="modal-prod-id" class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-charcoal text-brass text-xs font-bold tracking-wider"></span>
-                </div>
-                <div class="sm:col-span-7 p-6 sm:p-7 flex flex-col justify-between space-y-5">
-                    <div>
-                        <div class="flex justify-between items-start gap-2">
-                            <h3 id="modal-prod-name" class="font-serif text-xl sm:text-2xl font-bold text-charcoal"></h3>
-                            <button onclick="closeProductModal()" class="p-1.5 rounded-xl text-charcoal/50 hover:text-charcoal hover:bg-charcoal/5 cursor-pointer">
-                                <i data-lucide="x" class="w-5 h-5"></i>
-                            </button>
-                        </div>
-                        <p id="modal-prod-price" class="text-brassDark font-bold text-xl mt-1"></p>
-                        <p id="modal-prod-desc" class="text-xs sm:text-sm text-charcoal/75 mt-3 leading-relaxed"></p>
-                        
-                        <div class="mt-4 space-y-2.5 text-xs">
-                            <p><strong class="text-charcoal">Chất liệu:</strong> <span id="modal-prod-material" class="text-charcoal/75"></span></p>
-                            <div>
-                                <strong class="text-charcoal block mb-1.5">Chọn màu sắc:</strong>
-                                <div id="modal-prod-colors" class="flex flex-wrap gap-1.5"></div>
-                            </div>
-                            <div>
-                                <strong class="text-charcoal block mb-1.5">Chọn kích cỡ:</strong>
-                                <div id="modal-prod-sizes" class="flex gap-2"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="pt-3 border-t border-charcoal/10 flex flex-col sm:flex-row gap-2.5">
-                        <button id="modal-ask-ai-btn" class="flex-1 py-2.5 px-4 rounded-xl bg-sand hover:bg-brass/20 border border-brass/40 text-charcoal text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer">
-                            <i data-lucide="sparkles" class="w-4 h-4 text-brassDark"></i>
-                            <span>Nhờ AI tư vấn size</span>
-                        </button>
-                        <button id="modal-order-btn" class="flex-1 py-2.5 px-4 rounded-xl bg-charcoal hover:bg-brassDark text-cream text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer">
-                            <i data-lucide="shopping-bag" class="w-4 h-4 text-brass"></i>
-                            <span>Đặt nhanh qua AI</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== MODAL HỒ SƠ DỰ ÁN, PROMPT & HƯỚNG DẪN TẠO LINK CÔNG KHAI ==================== -->
-    <div id="config-modal" class="fixed inset-0 z-50 hidden bg-charcoal/75 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-brass/30">
-            <!-- Header Modal -->
-            <div class="px-6 py-4 border-b border-charcoal/10 flex items-center justify-between bg-cream">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-charcoal text-brass flex items-center justify-center">
-                        <i data-lucide="folder-kanban" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-serif font-bold text-charcoal text-base sm:text-lg">Hồ Sơ Dự Án, System Prompt & Xuất Bản Link</h3>
-                        <p class="text-xs text-charcoal/60">Tài liệu kỹ thuật phục vụ chấm bài, báo cáo và chia sẻ link công khai</p>
-                    </div>
-                </div>
-                <button onclick="closeConfigModal()" class="p-2 rounded-xl text-charcoal/50 hover:text-charcoal hover:bg-charcoal/5 transition cursor-pointer">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-
-            <!-- Tabs điều hướng trong Modal -->
-            <div class="px-6 pt-3 bg-cream border-b border-charcoal/10 flex gap-2 overflow-x-auto no-scrollbar">
-                <button onclick="switchModalTab('prompt')" id="tab-btn-prompt" class="modal-tab-btn px-4 py-2.5 text-xs font-semibold border-b-2 border-charcoal text-charcoal transition cursor-pointer">
-                    1. Kiến trúc & System Prompt
-                </button>
-                <button onclick="switchModalTab('data')" id="tab-btn-data" class="modal-tab-btn px-4 py-2.5 text-xs font-medium border-b-2 border-transparent text-charcoal/60 hover:text-charcoal transition cursor-pointer">
-                    2. Bảng Dữ Liệu Sản Phẩm (8 SP)
-                </button>
-                <button onclick="switchModalTab('deploy')" id="tab-btn-deploy" class="modal-tab-btn px-4 py-2.5 text-xs font-medium border-b-2 border-transparent text-charcoal/60 hover:text-charcoal transition cursor-pointer">
-                    3. Hướng Dẫn Tạo Link Riêng Để Gửi
-                </button>
-            </div>
-
-            <!-- Nội dung Tabs -->
-            <div class="p-6 overflow-y-auto space-y-6 text-xs sm:text-sm bg-white flex-1">
-                
-                <!-- TAB 1: KIẾN TRÚC & SYSTEM PROMPT -->
-                <div id="tab-content-prompt" class="space-y-5">
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div class="p-3.5 rounded-2xl bg-cream border border-charcoal/10">
-                            <span class="text-[11px] font-semibold uppercase text-brassDark">Mô hình AI</span>
-                            <p class="font-bold text-charcoal mt-0.5">Gemini 3 Flash Preview</p>
-                            <p class="text-xs text-charcoal/65 mt-1">Hỗ trợ hội thoại đa lượt (Multi-turn) & phản hồi thời gian thực.</p>
-                        </div>
-                        <div class="p-3.5 rounded-2xl bg-cream border border-charcoal/10">
-                            <span class="text-[11px] font-semibold uppercase text-brassDark">Kỹ thuật Tri thức</span>
-                            <p class="font-bold text-charcoal mt-0.5">Context Injection + UI Cards</p>
-                            <p class="text-xs text-charcoal/65 mt-1">Tự động nhận diện mã SP01–SP08 để hiển thị thẻ sản phẩm trực quan.</p>
-                        </div>
-                        <div class="p-3.5 rounded-2xl bg-cream border border-charcoal/10">
-                            <span class="text-[11px] font-semibold uppercase text-brassDark">Kiến trúc Triển khai</span>
-                            <p class="font-bold text-charcoal mt-0.5">Single-File Web App</p>
-                            <p class="text-xs text-charcoal/65 mt-1">100% độc lập trong 1 file HTML, không cần backend phức tạp.</p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-semibold text-charcoal">System Prompt đầy đủ (Định hình vai trò & Dữ liệu cửa hàng):</span>
-                            <button onclick="copyPromptText()" id="copy-btn" class="px-3.5 py-1.5 rounded-xl bg-charcoal text-cream text-xs font-semibold hover:bg-brassDark transition flex items-center gap-1.5 cursor-pointer">
-                                <i data-lucide="copy" class="w-3.5 h-3.5 text-brass"></i>
-                                <span>Sao chép System Prompt</span>
-                            </button>
-                        </div>
-                        <pre id="prompt-preview" class="bg-charcoal text-cream/90 p-4 rounded-2xl overflow-x-auto text-xs leading-relaxed whitespace-pre-wrap font-mono border border-brass/30"></pre>
-                    </div>
-                </div>
-
-                <!-- TAB 2: BẢNG DỮ LIỆU SẢN PHẨM -->
-                <div id="tab-content-data" class="hidden space-y-4">
-                    <p class="text-xs text-charcoal/70">Cơ sở dữ liệu 8 sản phẩm được nhúng trực tiếp vào tri thức của Chatbot để đảm bảo tư vấn chính xác giá bán, chất liệu và tồn kho:</p>
-                    <div class="overflow-x-auto border border-charcoal/10 rounded-2xl">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-cream border-b border-charcoal/10 text-charcoal font-semibold">
-                                    <th class="py-3 px-3">Mã</th>
-                                    <th class="py-3 px-3">Tên Sản Phẩm</th>
-                                    <th class="py-3 px-3">Giá Bán</th>
-                                    <th class="py-3 px-3">Size</th>
-                                    <th class="py-3 px-3">Chất Liệu & Màu Sắc</th>
-                                </tr>
-                            </thead>
-                            <tbody id="modal-data-table" class="divide-y divide-charcoal/10 text-charcoal/80">
-                                <!-- Render từ JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- TAB 3: HƯỚNG DẪN XUẤT BẢN LINK CÔNG KHAI -->
-                <div id="tab-content-deploy" class="hidden space-y-5">
-                    <div class="p-4 rounded-2xl bg-brass/10 border border-brass/30 text-charcoal">
-                        <h4 class="font-bold text-sm flex items-center gap-2">
-                            <i data-lucide="sparkles" class="w-4 h-4 text-brassDark"></i>
-                            <span>Cách xuất bản ứng dụng này thành đường link công khai miễn phí trong 2 phút:</span>
-                        </h4>
-                        <p class="text-xs text-charcoal/75 mt-1">Vì toàn bộ mã nguồn được đóng gói độc lập trong 1 file <code class="bg-white px-1.5 py-0.5 rounded border">index.html</code> duy nhất, bạn có thể xuất bản lên bất kỳ nền tảng miễn phí nào dưới đây để lấy link gửi cho giảng viên hoặc khách hàng:</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <!-- Cách 1: Netlify Drop -->
-                        <div class="p-4 rounded-2xl border border-charcoal/15 bg-cream/50 space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[11px] font-bold">Nhanh nhất (30 giây)</span>
-                            </div>
-                            <h5 class="font-bold text-charcoal text-sm">Cách 1: Netlify Drop</h5>
-                            <ol class="list-decimal list-inside text-xs text-charcoal/80 space-y-1.5 leading-relaxed">
-                                <li>Lưu mã nguồn này thành file tên <code class="bg-white px-1 rounded border">index.html</code> trong một thư mục.</li>
-                                <li>Truy cập <strong>app.netlify.com/drop</strong>.</li>
-                                <li>Kéo thả thư mục chứa file vào trình duyệt.</li>
-                                <li>Nhận ngay đường link dạng <code class="text-brassDark font-medium">https://lumina-fashion.netlify.app</code> để gửi!</li>
-                            </ol>
-                        </div>
-
-                        <!-- Cách 2: GitHub Pages -->
-                        <div class="p-4 rounded-2xl border border-charcoal/15 bg-cream/50 space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-800 text-[11px] font-bold">Chuẩn nộp đồ án</span>
-                            </div>
-                            <h5 class="font-bold text-charcoal text-sm">Cách 2: GitHub Pages</h5>
-                            <ol class="list-decimal list-inside text-xs text-charcoal/80 space-y-1.5 leading-relaxed">
-                                <li>Tạo repository mới trên <strong>GitHub.com</strong> (chế độ Public).</li>
-                                <li>Tải file <code class="bg-white px-1 rounded border">index.html</code> lên repository đó.</li>
-                                <li>Vào <strong>Settings → Pages</strong>, chọn nhánh <code class="bg-white px-1 rounded border">main</code> và nhấn Save.</li>
-                                <li>Lấy link <code class="text-brassDark font-medium">https://username.github.io/ten-repo</code> (kèm luôn link mã nguồn!).</li>
-                            </ol>
-                        </div>
-
-                        <!-- Cách 3: Vercel -->
-                        <div class="p-4 rounded-2xl border border-charcoal/15 bg-cream/50 space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="px-2.5 py-0.5 rounded-md bg-blue-100 text-blue-800 text-[11px] font-bold">Tốc độ cao</span>
-                            </div>
-                            <h5 class="font-bold text-charcoal text-sm">Cách 3: Vercel</h5>
-                            <ol class="list-decimal list-inside text-xs text-charcoal/80 space-y-1.5 leading-relaxed">
-                                <li>Đăng nhập <strong>Vercel.com</strong> bằng tài khoản GitHub.</li>
-                                <li>Chọn <strong>Add New → Project</strong> và Import repo vừa tạo ở Cách 2.</li>
-                                <li>Nhấn <strong>Deploy</strong> (không cần cấu hình thêm).</li>
-                                <li>Nhận link <code class="text-brassDark font-medium">https://lumina-fashion.vercel.app</code> hoạt động mượt mà trên mọi thiết bị.</li>
-                            </ol>
-                        </div>
-                    </div>
-
-                    <div class="p-4 rounded-2xl bg-charcoal text-cream text-xs space-y-1.5">
-                        <p class="font-semibold text-brass">Lưu ý về API Key khi chạy ngoài môi trường Canvas:</p>
-                        <p class="text-cream/80 leading-relaxed">Khi mở trên môi trường hiện tại, hệ thống tự động cấp phát quyền gọi Gemini API. Nếu bạn xuất bản file <code class="bg-white/10 px-1.5 py-0.5 rounded">index.html</code> ra hosting bên ngoài (Netlify/GitHub Pages), bạn chỉ cần lấy 1 API Key miễn phí tại <strong>aistudio.google.com</strong> và dán vào biến <code class="text-brass">const apiKey = "YOUR_API_KEY";</code> trong mã nguồn (hệ thống cũng tích hợp sẵn chế độ dự phòng thông minh đảm bảo không bao giờ bị lỗi trống màn hình).</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== CHATBOT WIDGET NỔI Ở GÓC DƯỚI BÊN PHẢI ==================== -->
-    <div id="chatbot-wrapper" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end">
-        
-        <!-- Cửa sổ Chat -->
-        <div id="chat-window" class="hidden chat-animate mb-3 w-[calc(100vw-2rem)] sm:w-[420px] h-[560px] max-h-[84vh] bg-cream rounded-3xl shadow-2xl border border-charcoal/15 flex flex-col overflow-hidden">
-            
-            <!-- Chat Header -->
-            <div class="bg-charcoal text-cream px-4 py-3.5 flex items-center justify-between shrink-0 border-b border-brass/30">
-                <div class="flex items-center gap-3">
-                    <div class="relative">
-                        <div class="w-10 h-10 rounded-2xl bg-brass/20 border border-brass/50 flex items-center justify-center">
-                            <i data-lucide="sparkles" class="w-5 h-5 text-brass"></i>
-                        </div>
-                        <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-charcoal"></span>
-                    </div>
-                    <div>
-                        <h3 class="font-serif font-semibold text-sm tracking-wide text-cream">Lumina AI Stylist</h3>
-                        <p class="text-[11px] text-brass flex items-center gap-1">
-                            <span>Chuyên viên tư vấn • Trực tuyến</span>
-                        </p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-1">
-                    <button onclick="resetChat()" class="p-2 rounded-xl text-cream/70 hover:text-brass hover:bg-white/10 transition cursor-pointer" title="Làm mới cuộc trò chuyện">
-                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-                    </button>
-                    <button onclick="toggleChat(false)" class="p-2 rounded-xl text-cream/70 hover:text-brass hover:bg-white/10 transition cursor-pointer" title="Thu gọn">
-                        <i data-lucide="chevron-down" class="w-5 h-5"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Khu vực hiển thị tin nhắn -->
-            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto chat-scroll space-y-4 bg-cream">
-                <!-- Tin nhắn sẽ được render bằng JS -->
-            </div>
-
-            <!-- Các nút gợi ý câu hỏi nhanh (Quick Prompts) -->
-            <div class="px-3 py-2 bg-sand/70 border-t border-charcoal/10 flex gap-1.5 overflow-x-auto no-scrollbar shrink-0">
-                <button onclick="sendQuickReply('Tư vấn size cho người 1m62, 52kg')" class="shrink-0 px-3 py-1.5 rounded-full bg-white hover:bg-brass/15 text-charcoal border border-brass/40 text-xs font-medium transition cursor-pointer shadow-2xs">
-                    📏 Tư vấn size 1m62, 52kg
-                </button>
-                <button onclick="sendQuickReply('Gợi ý set đồ đi làm thanh lịch')" class="shrink-0 px-3 py-1.5 rounded-full bg-white hover:bg-brass/15 text-charcoal border border-charcoal/15 text-xs font-medium transition cursor-pointer shadow-2xs">
-                    💼 Set đồ đi làm thanh lịch
-                </button>
-                <button onclick="sendQuickReply('Shop có mẫu váy đi tiệc nào dưới 1 triệu?')" class="shrink-0 px-3 py-1.5 rounded-full bg-white hover:bg-brass/15 text-charcoal border border-charcoal/15 text-xs font-medium transition cursor-pointer shadow-2xs">
-                    ✨ Váy đi tiệc dưới 1 triệu
-                </button>
-                <button onclick="sendQuickReply('Chính sách đổi trả của shop?')" class="shrink-0 px-3 py-1.5 rounded-full bg-white hover:bg-brass/15 text-charcoal border border-charcoal/15 text-xs font-medium transition cursor-pointer shadow-2xs">
-                    🛡️ Chính sách đổi trả
-                </button>
-            </div>
-
-            <!-- Ô nhập tin nhắn -->
-            <form id="chat-form" onsubmit="handleChatSubmit(event)" class="p-3 bg-white border-t border-charcoal/10 flex items-center gap-2 shrink-0">
-                <input 
-                    type="text" 
-                    id="chat-input" 
-                    placeholder="Nhập chiều cao, cân nặng hoặc mẫu cần tìm..." 
-                    class="flex-1 bg-cream text-charcoal placeholder-charcoal/40 text-xs sm:text-sm rounded-2xl px-4 py-2.5 border border-charcoal/10 focus:outline-none focus:border-brass transition"
-                    autocomplete="off"
-                />
-                <button 
-                    type="submit" 
-                    id="send-btn"
-                    class="w-10 h-10 rounded-2xl bg-charcoal hover:bg-brassDark text-brass hover:text-cream flex items-center justify-center transition shadow-xs shrink-0 cursor-pointer disabled:opacity-50"
-                >
-                    <i data-lucide="send" class="w-4 h-4"></i>
-                </button>
-            </form>
-        </div>
-
-        <!-- Nút tròn mở Chatbot -->
-        <button id="chat-launcher" onclick="toggleChat()" class="group relative flex items-center gap-2.5 bg-charcoal hover:bg-brassDark text-cream border border-brass/40 px-4 py-3.5 rounded-full shadow-2xl transition-all duration-300 cursor-pointer">
-            <div class="relative flex items-center justify-center">
-                <i data-lucide="sparkles" class="w-5 h-5 text-brass group-hover:scale-110 transition"></i>
-                <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-charcoal"></span>
-            </div>
-            <span class="font-medium text-xs sm:text-sm tracking-wide pr-1">Tư Vấn AI Stylist</span>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button onclick="openModal('apiModal')" class="text-xs sm:text-sm px-3 py-1.5 rounded-full border border-[#C5A059] text-[#1A1A1A] hover:bg-[#C5A059]/10 transition flex items-center gap-1.5">
+          <span id="apiStatusDot" class="w-2 h-2 rounded-full bg-amber-500"></span>
+          <span>Cài đặt API Key</span>
         </button>
+        <button onclick="openModal('docModal')" class="text-xs sm:text-sm px-3.5 py-1.5 rounded-full bg-[#1A1A1A] text-[#FAF9F6] hover:bg-[#333] transition">
+          Hồ sơ Dự án & Prompt
+        </button>
+      </div>
     </div>
+  </header>
 
-    <!-- ==================== JAVASCRIPT LOGIC & GEMINI API INTEGRATION ==================== -->
-    <script>
-        // 1. CƠ SỞ DỮ LIỆU 8 SẢN PHẨM THỜI TRANG LUMINA FASHION
-        const PRODUCTS = [
-            {
-                id: "SP01",
-                name: "Áo Sơ Mi Lụa Cổ Đức",
-                category: "Áo",
-                price: "480.000đ",
-                priceNum: 480000,
-                material: "Lụa tơ tằm nhân tạo cao cấp (Mềm mịn, ít nhăn)",
-                colors: ["Trắng ngọc trai", "Be sữa", "Xanh pastel"],
-                sizes: ["S", "M", "L", "XL"],
-                stock: "Còn hàng đủ size",
-                bestseller: true,
-                image: "https://images.unsplash.com/photo-1598554747436-c9293d6a588f?auto=format&fit=crop&w=600&q=80",
-                description: "Thiết kế cổ đức thanh lịch, tay dài cài khuy ngọc trai, tôn dáng nhẹ nhàng cho nàng công sở."
-            },
-            {
-                id: "SP02",
-                name: "Quần Tây Ống Suông Cạp Cao",
-                category: "Quần & Chân váy",
-                price: "550.000đ",
-                priceNum: 550000,
-                material: "Vải tuyết mưa Hàn Quốc đứng phom, co giãn nhẹ",
-                colors: ["Đen tuyền", "Nâu tây", "Xám ghi"],
-                sizes: ["S", "M", "L", "XL"],
-                stock: "Còn hàng đủ size",
-                bestseller: true,
-                image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=600&q=80",
-                description: "Quần tây ly trước giúp kéo dài đôi chân tối đa, che khuyết điểm vòng eo và bắp chân."
-            },
-            {
-                id: "SP03",
-                name: "Váy Midi Hoa Nhí Vintage",
-                category: "Đầm & Váy",
-                price: "620.000đ",
-                priceNum: 620000,
-                material: "Voan lụa 2 lớp mềm mại, thoáng mát",
-                colors: ["Vàng kem hoa nhí", "Xanh bơ hoa trắng"],
-                sizes: ["S", "M", "L", "XL"],
-                stock: "Còn hàng (S, M, L)",
-                bestseller: false,
-                image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=600&q=80",
-                description: "Dáng váy midi qua gối thướt tha, chiết eo nhẹ nhàng, phù hợp dạo phố, hẹn hò hoặc dự tiệc nhẹ."
-            },
-            {
-                id: "SP04",
-                name: "Áo Blazer Công Sở Hai Hàng Khuy",
-                category: "Áo",
-                price: "890.000đ",
-                priceNum: 890000,
-                material: "Vải bố sợi tổng hợp cao cấp có lớp lót lụa",
-                colors: ["Kem sữa", "Đen cổ điển", "Hồng phấn"],
-                sizes: ["S", "M", "L", "XL"],
-                stock: "Còn hàng đủ size",
-                bestseller: true,
-                image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=600&q=80",
-                description: "Phom blazer chuẩn mực, cầu vai nhẹ tạo sự chỉn chu, dễ phối cùng áo thun hoặc sơ mi lụa."
-            },
-            {
-                id: "SP05",
-                name: "Áo Thun Cotton Basic Cổ Tròn",
-                category: "Áo",
-                price: "250.000đ",
-                priceNum: 250000,
-                material: "100% Cotton hữu cơ co giãn 4 chiều, thấm hút mồ hôi",
-                colors: ["Trắng tinh khôi", "Đen", "Nâu cafe", "Xanh navy"],
-                sizes: ["S", "M", "L", "XL"],
-                stock: "Còn hàng đủ size",
-                bestseller: false,
-                image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80",
-                description: "Item thiết yếu trong tủ đồ hằng ngày, đường may tỉ mỉ, giữ phom bền đẹp sau nhiều lần giặt."
-            },
-            {
-                id: "SP06",
-                name: "Chân Váy Chữ A Dáng Ngắn",
-                category: "Quần & Chân váy",
-                price: "390.000đ",
-                priceNum: 390000,
-                material: "Vải kaki mịn có lớp quần bảo hộ bên trong",
-                colors: ["Be sáng", "Đen", "Xám tiêu"],
-                sizes: ["S", "M", "L", "XL"],
-                stock: "Còn hàng đủ size",
-                bestseller: false,
-                image: "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=600&q=80",
-                description: "Trẻ trung, năng động, tôn vòng eo và dễ dàng kết hợp cùng áo thun basic hoặc áo sơ mi lụa."
-            },
-            {
-                id: "SP07",
-                name: "Đầm Dạ Hội Lụa Satin Xẻ Tà",
-                category: "Đầm & Váy",
-                price: "1.250.000đ",
-                priceNum: 1250000,
-                material: "Lụa Satin ánh ngọc trai cao cấp, rủ tự nhiên",
-                colors: ["Đỏ rượu vang", "Xanh cổ vịt", "Vàng champagne"],
-                sizes: ["S", "M", "L", "XL"],
-                stock: "Còn hàng (S, M, L)",
-                bestseller: true,
-                image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=600&q=80",
-                description: "Thiết kế trễ vai quyến rũ, đường cắt xẻ tà tinh tế giúp nàng tỏa sáng trong các buổi tiệc tối sang trọng."
-            },
-            {
-                id: "SP08",
-                name: "Áo Khoác Cardigan Len Mỏng",
-                category: "Áo",
-                price: "420.000đ",
-                priceNum: 420000,
-                material: "Len dệt kim sợi mảnh mềm mại, không gây ngứa",
-                colors: ["Hồng pastel", "Kem vani", "Xanh mint"],
-                sizes: ["S", "M", "L", "XL"],
-                stock: "Còn hàng đủ size",
-                bestseller: false,
-                image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=600&q=80",
-                description: "Khoác nhẹ dịu dàng cho những ngày se lạnh hoặc phòng điều hòa, có thể mặc rời như áo len."
-            }
-        ];
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- LEFT COLUMN: PRODUCT CATALOG (7 cols) -->
+    <section class="lg:col-span-7 flex flex-col">
+      <div class="mb-5 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div>
+          <p class="text-xs uppercase tracking-[0.2em] text-[#C5A059] font-semibold">Bộ Sưu Tập Thu Đông</p>
+          <h1 class="font-serif-luxury text-3xl sm:text-4xl font-bold text-[#1A1A1A] mt-0.5">Danh Mục Thiết Kế</h1>
+        </div>
+        <div class="flex gap-1.5 flex-wrap">
+          <button onclick="filterProducts('ALL')" class="filter-btn active px-3 py-1 text-xs rounded-full bg-[#1A1A1A] text-white transition" data-cat="ALL">Tất cả (8)</button>
+          <button onclick="filterProducts('Áo')" class="filter-btn px-3 py-1 text-xs rounded-full bg-white border border-[#E8E4DC] hover:border-[#1A1A1A] transition" data-cat="Áo">Áo & Blazer</button>
+          <button onclick="filterProducts('Váy')" class="filter-btn px-3 py-1 text-xs rounded-full bg-white border border-[#E8E4DC] hover:border-[#1A1A1A] transition" data-cat="Váy">Váy & Đầm</button>
+          <button onclick="filterProducts('Quần')" class="filter-btn px-3 py-1 text-xs rounded-full bg-white border border-[#E8E4DC] hover:border-[#1A1A1A] transition" data-cat="Quần">Quần Âu</button>
+        </div>
+      </div>
 
-        // 2. SYSTEM PROMPT CHUẨN CHO CHATBOT LUMINA FASHION
-        const SYSTEM_PROMPT = `Bạn là "Lumina AI Stylist" — chuyên viên tư vấn thời trang cao cấp, thanh lịch và tận tâm của cửa hàng LUMINA FASHION.
+      <!-- Product Grid -->
+      <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
 
-NHIỆM VỤ CỐT LÕI:
-1. Tư vấn chi tiết về 8 sản phẩm hiện có của LUMINA FASHION (luôn ghi rõ mã sản phẩm dạng SP01, SP02... khi giới thiệu để hệ thống hiển thị thẻ sản phẩm trực quan cho khách).
-2. Tư vấn chọn size (S, M, L, XL) chính xác dựa trên chiều cao và cân nặng khách cung cấp. Nếu khách chưa nêu đủ chiều cao/cân nặng, hãy hỏi nhẹ nhàng để tư vấn chuẩn nhất.
-3. Gợi ý phối đồ (Mix & Match) theo hoàn cảnh (đi làm công sở, dạo phố, hẹn hò, dự tiệc) và ngân sách khách yêu cầu.
-4. Giải đáp chính sách đổi trả, giao hàng, kiểm tra tồn kho và hỗ trợ chốt đơn nhanh (xin Họ tên, SĐT, Địa chỉ, Mã SP, Size, Màu).
-5. Nếu khách hỏi các chủ đề ngoài thời trang/cửa hàng (toán học, lập trình, tin tức...), hãy từ chối khéo léo, lịch sự và hướng khách quay lại chủ đề trang phục.
+    <!-- RIGHT COLUMN: AI STYLIST CHATBOT (5 cols) -->
+    <section class="lg:col-span-5 flex flex-col h-[640px] lg:h-[calc(100vh-7rem)] lg:sticky lg:top-20 bg-white rounded-2xl border border-[#E8E4DC] shadow-sm overflow-hidden">
+      <!-- Chat Header -->
+      <div class="bg-[#1A1A1A] text-[#FAF9F6] px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <div class="w-10 h-10 rounded-full bg-[#C5A059] text-[#1A1A1A] flex items-center justify-center font-serif-luxury font-bold text-lg">
+              AI
+            </div>
+            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-[#1A1A1A] rounded-full"></span>
+          </div>
+          <div>
+            <h2 class="font-semibold text-sm tracking-wide">Lumina AI Stylist</h2>
+            <p class="text-[11px] text-[#B8B2A6]">Tư vấn Size • Phối đồ • Kiểm tra kho 24/7</p>
+          </div>
+        </div>
+        <button onclick="resetChat()" title="Làm mới hội thoại" class="text-xs text-[#B8B2A6] hover:text-white px-2.5 py-1 rounded border border-white/15 transition">
+          Làm mới
+        </button>
+      </div>
 
-CƠ SỞ DỮ LIỆU 8 SẢN PHẨM LUMINA FASHION:
-${PRODUCTS.map(p => `- [${p.id}] ${p.name}: Giá ${p.price} | Chất liệu: ${p.material} | Màu: ${p.colors.join(', ')} | Size: ${p.sizes.join(', ')} | Tình trạng: ${p.stock} ${p.bestseller ? '(BÁN CHẠY)' : ''} | Mô tả: ${p.description}`).join('\n')}
+      <!-- Chat Messages Area -->
+      <div id="chatMessages" class="flex-1 p-4 overflow-y-auto chat-scroll space-y-4 bg-[#FAF9F6]/60">
+        <!-- Welcome message rendered by JS -->
+      </div>
 
-BẢNG QUY ĐỔI SIZE CHUẨN (NỮ):
-- Size S: Cao 150–158cm | Nặng 42–48kg | Ngực 82–85cm | Eo 64–67cm
-- Size M: Cao 156–164cm | Nặng 49–54kg | Ngực 86–89cm | Eo 68–71cm
-- Size L: Cao 162–170cm | Nặng 55–60kg | Ngực 90–93cm | Eo 72–75cm
-- Size XL: Cao 165–175cm | Nặng 61–68kg | Ngực 94–98cm | Eo 76–80cm
+      <!-- Quick Suggestions -->
+      <div class="px-4 py-2.5 bg-white border-t border-[#F0ECE4] flex gap-1.5 overflow-x-auto no-scrollbar">
+        <button onclick="sendQuickPrompt('Mình cao 1m62, nặng 52kg thì mặc size gì vừa?')" class="shrink-0 text-[11px] px-3 py-1.5 rounded-full bg-[#FAF9F6] border border-[#E8E4DC] hover:border-[#C5A059] text-[#1A1A1A] transition">
+          📏 Tư vấn size (1m62 - 52kg)
+        </button>
+        <button onclick="sendQuickPrompt('Gợi ý set đồ đi làm thanh lịch dưới 1.5 triệu')" class="shrink-0 text-[11px] px-3 py-1.5 rounded-full bg-[#FAF9F6] border border-[#E8E4DC] hover:border-[#C5A059] text-[#1A1A1A] transition">
+          💼 Phối đồ công sở
+        </button>
+        <button onclick="sendQuickPrompt('Shop có đầm nào đi tiệc tối sang trọng không?')" class="shrink-0 text-[11px] px-3 py-1.5 rounded-full bg-[#FAF9F6] border border-[#E8E4DC] hover:border-[#C5A059] text-[#1A1A1A] transition">
+          ✨ Đầm dự tiệc
+        </button>
+        <button onclick="sendQuickPrompt('Chính sách đổi trả và giao hàng của shop thế nào?')" class="shrink-0 text-[11px] px-3 py-1.5 rounded-full bg-[#FAF9F6] border border-[#E8E4DC] hover:border-[#C5A059] text-[#1A1A1A] transition">
+          🚚 Chính sách đổi trả
+        </button>
+      </div>
 
-CHÍNH SÁCH & ƯU ĐÃI CỬA HÀNG:
-- Đổi size miễn phí trong 7 ngày nếu sản phẩm còn nguyên tem mác, chưa qua sử dụng/giặt ủi.
-- Freeship toàn quốc cho đơn hàng từ 500.000đ (đơn dưới 500.000đ phí ship đồng giá 30.000đ). Giao hàng 2–4 ngày, được đồng kiểm trước khi thanh toán.
-- Mã ưu đãi: Nhập mã "LUMINA10" giảm ngay 10% cho đơn hàng đầu tiên.
+      <!-- Input Area -->
+      <form id="chatForm" onsubmit="handleChatSubmit(event)" class="p-3 bg-white border-t border-[#E8E4DC] flex items-center gap-2">
+        <input
+          id="userInput"
+          type="text"
+          placeholder="Nhập chiều cao, cân nặng hoặc phong cách bạn tìm..."
+          class="flex-1 text-sm px-4 py-2.5 rounded-full bg-[#FAF9F6] border border-[#E8E4DC] focus:outline-none focus:border-[#1A1A1A]"
+          required
+        />
+        <button
+          type="submit"
+          id="sendBtn"
+          class="px-5 py-2.5 rounded-full bg-[#1A1A1A] text-[#FAF9F6] text-sm font-medium hover:bg-[#C5A059] hover:text-[#1A1A1A] transition shrink-0"
+        >
+          Gửi
+        </button>
+      </form>
+    </section>
+  </main>
 
-PHONG CÁCH GIAO TIẾP:
-- Xưng "mình" hoặc "Lumina", gọi khách là "bạn" hoặc "nàng".
-- Trình bày ngắn gọn, tinh tế, dùng gạch đầu dòng rõ ràng, dễ đọc trên điện thoại.`;
+  <!-- MODAL: PRODUCT DETAIL & QUICK ORDER -->
+  <div id="productModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-xl animate-fade-in">
+      <div id="productModalContent"></div>
+    </div>
+  </div>
 
-        let chatHistory = [];
-        let isChatOpen = false;
-        let isWaitingResponse = false;
+  <!-- MODAL: API KEY CONFIGURATION -->
+  <div id="apiModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl animate-fade-in">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-serif-luxury text-2xl font-bold">Cấu Hình Gemini API Key</h3>
+        <button onclick="closeModal('apiModal')" class="text-gray-400 hover:text-black text-xl">&times;</button>
+      </div>
+      <p class="text-xs text-gray-600 leading-relaxed mb-4">
+        Nhập khóa <strong>Google Gemini API Key</strong> miễn phí (lấy tại <a href="https://aistudio.google.com/" target="_blank" class="text-[#C5A059] underline font-medium">aistudio.google.com</a>) để kích hoạt AI tư vấn thông minh. Nếu để trống, hệ thống sẽ tự động chạy ở <strong>Chế độ Demo Offline (Rule-based AI)</strong> vẫn trả lời đầy đủ kịch bản.
+      </p>
+      <input id="apiKeyInput" type="password" placeholder="AIzaSy..." class="w-full text-sm px-3.5 py-2.5 rounded-lg border border-gray-300 mb-4 focus:outline-none focus:border-black" />
+      <div class="flex justify-end gap-2">
+        <button onclick="closeModal('apiModal')" class="px-4 py-2 text-xs rounded-lg border border-gray-200 hover:bg-gray-50">Đóng</button>
+        <button onclick="saveApiKey()" class="px-4 py-2 text-xs rounded-lg bg-[#1A1A1A] text-white hover:bg-[#333]">Lưu cấu hình</button>
+      </div>
+    </div>
+  </div>
 
-        // 3. KHỞI TẠO GIAO DIỆN KHI TẢI TRANG
-        window.onload = function() {
-            lucide.createIcons();
-            renderProducts(PRODUCTS);
-            renderModalDataTable();
-            document.getElementById('prompt-preview').textContent = SYSTEM_PROMPT;
-            initWelcomeMessage();
-        };
+  <!-- MODAL: PROJECT DOCS & SYSTEM PROMPT (FOR REPORT & DEMO) -->
+  <div id="docModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-xl animate-fade-in">
+      <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+        <div>
+          <h3 class="font-serif-luxury text-2xl font-bold">Hồ Sơ Kỹ Thuật & System Prompt</h3>
+          <p class="text-xs text-gray-500">Tài liệu phục vụ Báo cáo Word/PDF và Video Demo thuyết trình</p>
+        </div>
+        <button onclick="closeModal('docModal')" class="text-gray-400 hover:text-black text-2xl">&times;</button>
+      </div>
+      <div class="p-6 overflow-y-auto space-y-5 text-sm">
+        <div>
+          <h4 class="font-bold text-[#1A1A1A] mb-1">1. Kiến trúc hệ thống (Retrieval-Augmented Prompting)</h4>
+          <p class="text-gray-600 text-xs leading-relaxed">
+            Hệ thống kết hợp giao diện Web SPA (Single Page Application) với mô hình ngôn ngữ lớn <strong>Gemini 2.5 Flash</strong>. Dữ liệu danh mục sản phẩm (8 mã SP01–SP08), bảng quy đổi size theo chiều cao/cân nặng và chính sách cửa hàng được tiêm trực tiếp vào <strong>System Instruction</strong> giúp AI tư vấn chính xác, không bịa đặt giá cả và tự động trích xuất thẻ sản phẩm tương tác ngay trong khung chat.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-bold text-[#1A1A1A] mb-1">2. System Prompt sử dụng huấn luyện Chatbot</h4>
+          <pre id="promptPreview" class="bg-[#FAF9F6] border border-[#E8E4DC] p-3.5 rounded-xl text-xs text-gray-800 whitespace-pre-wrap font-mono leading-relaxed"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // Render danh sách 8 sản phẩm ra lưới
-        function renderProducts(list) {
-            const grid = document.getElementById('product-grid');
-            grid.innerHTML = list.map(product => `
-                <div class="group bg-white rounded-3xl border border-charcoal/10 overflow-hidden shadow-2xs hover:shadow-xl hover:border-brass/50 transition-all duration-300 flex flex-col">
-                    <!-- Ảnh sản phẩm -->
-                    <div class="relative aspect-[3/4] bg-sand overflow-hidden cursor-pointer" onclick="openProductModal('${product.id}')">
-                        <img 
-                            src="${product.image}" 
-                            alt="${product.name}" 
-                            onerror="this.onerror=null;this.src='https://placehold.co/600x800/EFECE6/1A1A1A?text=${encodeURIComponent(product.name)}';"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <!-- Mã SP & Badge -->
-                        <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
-                            <span class="px-2.5 py-1 rounded-lg bg-charcoal/90 backdrop-blur-xs text-brass text-[11px] font-bold tracking-wider">
-                                ${product.id}
-                            </span>
-                            ${product.bestseller ? `
-                                <span class="px-2.5 py-1 rounded-lg bg-brass text-charcoal text-[11px] font-semibold">
-                                    Best Seller
-                                </span>
-                            ` : ''}
-                        </div>
-                    </div>
+  <script>
+    // =========================================================================
+    // 1. CẤU HÌNH API KEY (Có thể dán trực tiếp API Key vào đây trước khi up GitHub)
+    // =========================================================================
+    const DEFAULT_GEMINI_API_KEY = ""; // Dán API Key vào giữa dấu ngoặc kép nếu muốn chạy online mặc định
+    let GEMINI_API_KEY = localStorage.getItem("lumina_gemini_key") || DEFAULT_GEMINI_API_KEY;
 
-                    <!-- Thông tin chi tiết -->
-                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
-                        <div class="space-y-2">
-                            <h3 onclick="openProductModal('${product.id}')" class="font-serif font-semibold text-charcoal text-base sm:text-lg leading-snug group-hover:text-brassDark transition cursor-pointer">
-                                ${product.name}
-                            </h3>
-                            <p class="text-brassDark font-bold text-base">${product.price}</p>
-                            
-                            <div class="pt-1 space-y-1.5 text-xs text-charcoal/70">
-                                <p class="line-clamp-1"><strong class="text-charcoal">Chất liệu:</strong> ${product.material}</p>
-                                <p class="line-clamp-1"><strong class="text-charcoal">Màu sắc:</strong> ${product.colors.join(', ')}</p>
-                                <div class="flex items-center gap-1.5 pt-1">
-                                    <strong class="text-charcoal">Size:</strong>
-                                    <div class="flex gap-1">
-                                        ${product.sizes.map(s => `<span class="px-2 py-0.5 rounded-md bg-cream border border-charcoal/15 text-charcoal font-medium text-[11px]">${s}</span>`).join('')}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    // =========================================================================
+    // 2. CƠ SỞ DỮ LIỆU SẢN PHẨM CỬA HÀNG THỜI TRANG LUMINA
+    // =========================================================================
+    const PRODUCTS = [
+      {
+        id: "SP01",
+        name: "Áo Blazer Dạ Tweed Kem",
+        category: "Áo",
+        price: 890000,
+        sizes: ["S", "M", "L"],
+        colors: ["Trắng Kem", "Đen Tuyền"],
+        material: "Dạ Tweed dệt kim tuyến nhẹ, lót lụa Habutai",
+        occasion: "Đi làm công sở, gặp gỡ đối tác, dự tiệc nhẹ",
+        image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=600&q=80",
+        desc: "Phom dáng chiết eo nhẹ tôn dáng, khuy ngọc trai sang trọng, phù hợp phối cùng chân váy chữ A hoặc quần âu ống suông."
+      },
+      {
+        id: "SP02",
+        name: "Đầm Lụa Satin Cổ Đổ",
+        category: "Váy",
+        price: 1150000,
+        sizes: ["S", "M", "L"],
+        colors: ["Vàng Champagne", "Đỏ Rượu Vang"],
+        material: "Lụa Satin cao cấp rủ mềm, chống nhăn",
+        occasion: "Dự tiệc tối, hẹn hò, sự kiện sang trọng",
+        image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=600&q=80",
+        desc: "Thiết kế cổ đổ quyến rũ cùng đường cắt bias ôm nhẹ đường cong cơ thể, tạo hiệu ứng bắt sáng tinh tế dưới ánh đèn."
+      },
+      {
+        id: "SP03",
+        name: "Quần Âu Ống Suông Cạp Cao",
+        category: "Quần",
+        price: 560000,
+        sizes: ["S", "M", "L", "XL"],
+        colors: ["Đen", "Be Sáng", "Nâu Mocha"],
+        material: "Tuytsi Hàn Quốc đứng phom, co giãn nhẹ",
+        occasion: "Đi làm hàng ngày, đi học, dạo phố thanh lịch",
+        image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=600&q=80",
+        desc: "Thiết kế cạp cao 2 khuy giúp kéo dài đôi chân hiệu quả, che khuyết điểm phần đùi và bắp chân."
+      },
+      {
+        id: "SP04",
+        name: "Áo Sơ Mi Lụa Tơ Tằm Cổ Nơ",
+        category: "Áo",
+        price: 520000,
+        sizes: ["S", "M", "L"],
+        colors: ["Trắng Ngà", "Xanh Pastel"],
+        material: "Lụa tơ nhân tạo mềm mát, không lộ nội y",
+        occasion: "Công sở, phỏng vấn, họp hành",
+        image: "https://images.unsplash.com/photo-1598554747436-c9293d6a588f?auto=format&fit=crop&w=600&q=80",
+        desc: "Phần dây nơ cổ linh hoạt có thể thắt nơ nữ tính hoặc thả suông hiện đại, cực kỳ ăn ý khi sơ vin với quần SP03."
+      },
+      {
+        id: "SP05",
+        name: "Chân Váy Midi Xếp Ly Tầng",
+        category: "Váy",
+        price: 490000,
+        sizes: ["S", "M", "L"],
+        colors: ["Nâu Caramel", "Đen"],
+        material: "Voan lụa hai lớp bồng bềnh",
+        occasion: "Dạo phố, cafe cuối tuần, đi làm",
+        image: "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=600&q=80",
+        desc: "Độ dài qua gối thanh lịch, cạp chun giấu tinh tế phía sau mang lại sự thoải mái suốt cả ngày."
+      },
+      {
+        id: "SP06",
+        name: "Áo Len Cardigan Dệt Kim Mỏng",
+        category: "Áo",
+        price: 450000,
+        sizes: ["Freesize (42kg - 62kg)"],
+        colors: ["Xám Tiêu", "Kem Sữa"],
+        material: "Len lông cừu tổng hợp mềm mịn, không xù",
+        occasion: "Mặc khoác ngoài văn phòng điều hòa, thời tiết se lạnh",
+        image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=600&q=80",
+        desc: "Phom dáng basic dễ phối lớp (layering) bên ngoài váy liền SP07 hoặc áo sơ mi SP04."
+      },
+      {
+        id: "SP07",
+        name: "Đầm Hoa Nhí Cổ Vuông Vintage",
+        category: "Váy",
+        price: 680000,
+        sizes: ["S", "M", "L"],
+        colors: ["Nền Kem Hoa Nâu"],
+        material: "Chiffon lụa thoáng mát có lót lụa",
+        occasion: "Du lịch, dạo phố, hẹn hò cuối tuần",
+        image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=600&q=80",
+        desc: "Chi tiết cổ vuông tôn xương quai xanh và tay bồng nhẹ che bắp tay hiệu quả."
+      },
+      {
+        id: "SP08",
+        name: "Áo Khoác Trench Coat Dáng Dài",
+        category: "Áo",
+        price: 1390000,
+        sizes: ["S", "M", "L"],
+        colors: ["Be Cổ Điển", "Xanh Olive"],
+        material: "Kaki gió trượt nước cao cấp",
+        occasion: "Đi công tác, du lịch thu đông, phong cách Parisian Chic",
+        image: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=600&q=80",
+        desc: "Kèm đai thắt eo bản lớn tạo tỷ lệ cơ thể cân đối, lớp lót kẻ caro sang trọng."
+      }
+    ];
 
-                        <!-- Nút tương tác -->
-                        <div class="flex gap-2 pt-1">
-                            <button 
-                                onclick="openProductModal('${product.id}')" 
-                                class="flex-1 py-2.5 px-3 rounded-xl bg-cream hover:bg-sand border border-charcoal/15 text-charcoal text-xs font-semibold transition cursor-pointer"
-                            >
-                                Chi tiết
-                            </button>
-                            <button 
-                                onclick="askAboutProduct('${product.id}', '${product.name}')" 
-                                class="flex-1 py-2.5 px-3 rounded-xl bg-charcoal hover:bg-brassDark text-cream text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
-                            >
-                                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-brass"></i>
-                                <span>Hỏi AI</span>
-                            </button>
-                        </div>
-                    </div>
+    // =========================================================================
+    // 3. SYSTEM PROMPT HUẤN LUYỆN CHATBOT
+    // =========================================================================
+    const SYSTEM_PROMPT = `Bạn là Lumina AI Stylist — chuyên viên tư vấn thời trang cao cấp của thương hiệu LUMINA FASHION.
+Phong cách giao tiếp: Lịch sự, tinh tế, tận tâm, tư vấn có gu thẩm mỹ (xưng "em" hoặc "Lumina", gọi khách là "chị/bạn").
+
+DANH MỤC SẢN PHẨM HIỆN CÓ CỦA SHOP:
+${PRODUCTS.map(p => `- [${p.id}] ${p.name} | Giá: ${p.price.toLocaleString('vi-VN')}đ | Size: ${p.sizes.join(', ')} | Màu: ${p.colors.join(', ')} | Chất liệu: ${p.material} | Phù hợp: ${p.occasion}`).join('\n')}
+
+BẢNG QUY ĐỔI SIZE CHUẨN CỦA LUMINA:
+- Size S: Chiều cao 1m50 - 1m60, Cân nặng 42kg - 48kg (Eo 62-66cm)
+- Size M: Chiều cao 1m58 - 1m66, Cân nặng 49kg - 54kg (Eo 67-71cm)
+- Size L: Chiều cao 1m62 - 1m72, Cân nặng 55kg - 61kg (Eo 72-76cm)
+- Size XL: Chiều cao 1m65 - 1m75, Cân nặng 62kg - 68kg (Eo 77-82cm)
+
+CHÍNH SÁCH CỬA HÀNG:
+- Miễn phí vận chuyển (Freeship) toàn quốc cho đơn hàng từ 800.000đ trở lên (đơn dưới 800k phí ship đồng giá 25.000đ).
+- Hỗ trợ đổi size / đổi mẫu trong vòng 7 ngày kể từ khi nhận hàng (sản phẩm còn nguyên tem mác).
+- Địa chỉ showroom: 128 Phố Huế, Hai Bà Trưng, Hà Nội. Hotline: 0988.123.456.
+
+QUY TẮC TRẢ LỜI QUAN TRỌNG:
+1. Luôn nhắc rõ MÃ SẢN PHẨM trong ngoặc vuông (ví dụ: [SP01], [SP03]) mỗi khi giới thiệu sản phẩm để hệ thống tự động hiển thị thẻ mua hàng trực quan cho khách.
+2. Nếu khách hỏi tư vấn size, hãy đối chiếu chiều cao và cân nặng với bảng size trên để đưa ra khuyến nghị chính xác nhất.
+3. Nếu khách hỏi gợi ý phối đồ, hãy kết hợp 2-3 sản phẩm của shop và tính tổng giá trị set đồ.
+4. Trả lời ngắn gọn, súc tích (dưới 180 từ), trình bày rõ ràng bằng gạch đầu dòng. Nếu khách hỏi ngoài lĩnh vực thời trang, hãy từ chối khéo léo và hướng khách quay lại sản phẩm của Lumina.`;
+
+    // =========================================================================
+    // 4. RENDER GIAO DIỆN & TƯƠNG TÁC
+    // =========================================================================
+    let chatHistory = [];
+
+    function formatCurrency(num) {
+      return num.toLocaleString('vi-VN') + 'đ';
+    }
+
+    function renderProducts(category = 'ALL') {
+      const grid = document.getElementById('productGrid');
+      const filtered = category === 'ALL' ? PRODUCTS : PRODUCTS.filter(p => p.category === category);
+      
+      grid.innerHTML = filtered.map(p => `
+        <div class="bg-white rounded-xl border border-[#E8E4DC] overflow-hidden hover:shadow-md transition group flex flex-col">
+          <div class="relative aspect-[4/3] overflow-hidden bg-[#F2EFE9]">
+            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+            <span class="absolute top-2.5 left-2.5 bg-[#1A1A1A]/85 text-[#C5A059] text-[11px] font-semibold px-2.5 py-0.5 rounded">
+              ${p.id}
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/90 text-[#1A1A1A] text-[11px] font-medium px-2 py-0.5 rounded">
+              Size: ${p.sizes.join(', ')}
+            </span>
+          </div>
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start gap-2">
+                <h3 class="font-semibold text-sm text-[#1A1A1A] leading-snug">${p.name}</h3>
+                <span class="font-bold text-sm text-[#C5A059] shrink-0">${formatCurrency(p.price)}</span>
+              </div>
+              <p class="text-xs text-[#7A756D] mt-1 line-clamp-2">${p.desc}</p>
+            </div>
+            <div class="mt-3 pt-3 border-t border-[#F4F1EA] flex items-center justify-between gap-2">
+              <button onclick="openProductDetail('${p.id}')" class="text-xs font-medium text-[#1A1A1A] hover:text-[#C5A059] transition">
+                Xem chi tiết
+              </button>
+              <button onclick="askBotAboutProduct('${p.id}')" class="text-xs px-3 py-1.5 rounded-full bg-[#FAF9F6] border border-[#E8E4DC] hover:bg-[#1A1A1A] hover:text-white transition">
+                Hỏi AI tư vấn →
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterProducts(cat) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.classList.add('bg-[#1A1A1A]', 'text-white');
+          btn.classList.remove('bg-white');
+        } else {
+          btn.classList.remove('bg-[#1A1A1A]', 'text-white');
+          btn.classList.add('bg-white');
+        }
+      });
+      renderProducts(cat);
+    }
+
+    function openProductDetail(id) {
+      const p = PRODUCTS.find(item => item.id === id);
+      if (!p) return;
+      document.getElementById('productModalContent').innerHTML = `
+        <div class="relative h-64 bg-gray-100">
+          <img src="${p.image}" class="w-full h-full object-cover" />
+          <button onclick="closeModal('productModal')" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-black flex items-center justify-center font-bold shadow">&times;</button>
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded bg-[#1A1A1A] text-[#C5A059]">${p.id} • ${p.category}</span>
+            <span class="text-lg font-bold text-[#C5A059]">${formatCurrency(p.price)}</span>
+          </div>
+          <h3 class="font-serif-luxury text-2xl font-bold mt-2">${p.name}</h3>
+          <p class="text-xs text-gray-600 mt-2 leading-relaxed">${p.desc}</p>
+          <div class="mt-4 space-y-1.5 text-xs bg-[#FAF9F6] p-3.5 rounded-xl border border-[#E8E4DC]">
+            <p><strong>Chất liệu:</strong> ${p.material}</p>
+            <p><strong>Màu sắc:</strong> ${p.colors.join(', ')}</p>
+            <p><strong>Kích cỡ sẵn có:</strong> ${p.sizes.join(', ')}</p>
+            <p><strong>Gợi ý dịp mặc:</strong> ${p.occasion}</p>
+          </div>
+          <div class="mt-5 flex gap-2">
+            <button onclick="closeModal('productModal'); askBotAboutProduct('${p.id}')" class="flex-1 py-2.5 rounded-full border border-[#1A1A1A] text-xs font-semibold hover:bg-gray-50">
+              Nhờ AI tư vấn size mẫu này
+            </button>
+            <button onclick="alert('Đã thêm ${p.name} (${p.id}) vào giỏ hàng demo thành công!'); closeModal('productModal')" class="flex-1 py-2.5 rounded-full bg-[#1A1A1A] text-white text-xs font-semibold hover:bg-[#C5A059] hover:text-black transition">
+              Đặt hàng ngay
+            </button>
+          </div>
+        </div>
+      `;
+      openModal('productModal');
+    }
+
+    function askBotAboutProduct(id) {
+      const p = PRODUCTS.find(item => item.id === id);
+      if (!p) return;
+      sendQuickPrompt(`Tư vấn chi tiết cho mình mẫu ${p.name} (${p.id}) và cách phối đồ phù hợp nhé!`);
+    }
+
+    // =========================================================================
+    // 5. XỬ LÝ CHATBOT (GEMINI API + FALLBACK THÔNG MINH)
+    // =========================================================================
+    function appendMessage(role, text) {
+      const container = document.getElementById('chatMessages');
+      const isUser = role === 'user';
+
+      // Tìm tất cả mã sản phẩm SP01..SP08 xuất hiện trong câu trả lời của AI để gắn thẻ sản phẩm
+      let productCardsHtml = '';
+      if (!isUser) {
+        const matchedIds = [...new Set(text.match(/SP0[1-8]/g) || [])];
+        if (matchedIds.length > 0) {
+          productCardsHtml = `<div class="mt-2.5 space-y-2">` + matchedIds.map(id => {
+            const p = PRODUCTS.find(item => item.id === id);
+            if (!p) return '';
+            return `
+              <div onclick="openProductDetail('${p.id}')" class="cursor-pointer flex items-center gap-2.5 p-2 rounded-xl bg-[#FAF9F6] border border-[#E8E4DC] hover:border-[#C5A059] transition">
+                <img src="${p.image}" class="w-12 h-12 rounded-lg object-cover shrink-0" />
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-semibold text-[#1A1A1A] truncate">[${p.id}] ${p.name}</p>
+                  <p class="text-[11px] text-[#C5A059] font-bold">${formatCurrency(p.price)} • Size ${p.sizes.join('/')}</p>
                 </div>
-            `).join('');
-            lucide.createIcons();
-        }
-
-        // Lọc sản phẩm theo danh mục
-        function filterProducts(category) {
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                if (btn.dataset.cat === category) {
-                    btn.className = "filter-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-charcoal text-cream transition cursor-pointer";
-                } else {
-                    btn.className = "filter-btn px-4 py-2 rounded-xl text-xs font-medium bg-white text-charcoal/75 border border-charcoal/15 hover:border-brass transition cursor-pointer";
-                }
-            });
-
-            if (category === 'all') {
-                renderProducts(PRODUCTS);
-            } else {
-                renderProducts(PRODUCTS.filter(p => p.category === category));
-            }
-        }
-
-        // 4. MODAL CHI TIẾT SẢN PHẨM & ĐẶT NHANH
-        function openProductModal(productId) {
-            const product = PRODUCTS.find(p => p.id === productId);
-            if (!product) return;
-
-            document.getElementById('modal-prod-img').src = product.image;
-            document.getElementById('modal-prod-id').textContent = product.id;
-            document.getElementById('modal-prod-name').textContent = product.name;
-            document.getElementById('modal-prod-price').textContent = product.price;
-            document.getElementById('modal-prod-desc').textContent = product.description;
-            document.getElementById('modal-prod-material').textContent = product.material;
-
-            document.getElementById('modal-prod-colors').innerHTML = product.colors.map((c, idx) => `
-                <span class="px-2.5 py-1 rounded-lg text-xs border ${idx === 0 ? 'bg-charcoal text-cream border-charcoal' : 'bg-white text-charcoal border-charcoal/20'}">${c}</span>
-            `).join('');
-
-            document.getElementById('modal-prod-sizes').innerHTML = product.sizes.map((s, idx) => `
-                <span class="w-8 h-8 rounded-lg text-xs font-semibold flex items-center justify-center border ${idx === 1 ? 'bg-brass text-charcoal border-brass' : 'bg-white text-charcoal border-charcoal/20'}">${s}</span>
-            `).join('');
-
-            document.getElementById('modal-ask-ai-btn').onclick = () => {
-                closeProductModal();
-                askAboutProduct(product.id, product.name);
-            };
-
-            document.getElementById('modal-order-btn').onclick = () => {
-                closeProductModal();
-                openChatWithPrompt(`Mình muốn đặt nhanh mẫu ${product.name} (${product.id}) - Giá ${product.price}. Hỗ trợ mình kiểm tra size và lên đơn nhé!`);
-            };
-
-            document.getElementById('product-modal').classList.remove('hidden');
-            lucide.createIcons();
-        }
-
-        function closeProductModal() {
-            document.getElementById('product-modal').classList.add('hidden');
-        }
-
-        // 5. ĐIỀU KHIỂN CHATBOT
-        function toggleChat(forceState = null) {
-            const chatWindow = document.getElementById('chat-window');
-            isChatOpen = forceState !== null ? forceState : !isChatOpen;
-            if (isChatOpen) {
-                chatWindow.classList.remove('hidden');
-                document.getElementById('chat-input').focus();
-                scrollToBottom();
-            } else {
-                chatWindow.classList.add('hidden');
-            }
-        }
-
-        function initWelcomeMessage() {
-            const welcomeText = `Chào mừng bạn đến với **LUMINA FASHION** ✨\nMình là **Lumina AI Stylist** — trợ lý tư vấn thời trang riêng của bạn.\n\nMình có thể hỗ trợ bạn:\n• Tư vấn chọn size (S, M, L, XL) theo chiều cao & cân nặng\n• Gợi ý phối đồ đi làm, dạo phố, dự tiệc\n• Kiểm tra giá bán, chất liệu & chính sách đổi trả\n\nBạn có thể bấm các gợi ý bên dưới hoặc nhắn trực tiếp cho mình nhé! 💕`;
-            appendMessage('bot', welcomeText);
-        }
-
-        function resetChat() {
-            chatHistory = [];
-            document.getElementById('chat-messages').innerHTML = '';
-            initWelcomeMessage();
-        }
-
-        function askAboutProduct(id, name) {
-            toggleChat(true);
-            sendUserMessage(`Tư vấn chi tiết cho mình về mẫu ${name} (${id}): chất liệu, cách phối đồ và chọn size thế nào ạ?`);
-        }
-
-        function openChatWithPrompt(text) {
-            toggleChat(true);
-            sendUserMessage(text);
-        }
-
-        function sendQuickReply(text) {
-            if (isWaitingResponse) return;
-            sendUserMessage(text);
-        }
-
-        function handleChatSubmit(e) {
-            e.preventDefault();
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if (!text || isWaitingResponse) return;
-            input.value = '';
-            sendUserMessage(text);
-        }
-
-        // 6. GỬI TIN NHẮN & GỌI GEMINI API (CÓ FALLBACK THÔNG MINH KHI CHẠY ĐỘC LẬP)
-        async function sendUserMessage(userText) {
-            appendMessage('user', userText);
-            
-            chatHistory.push({
-                role: "user",
-                parts: [{ text: userText }]
-            });
-
-            const typingId = showTypingIndicator();
-            isWaitingResponse = true;
-            document.getElementById('send-btn').disabled = true;
-
-            try {
-                const replyText = await callGeminiWithRetry(chatHistory);
-                removeTypingIndicator(typingId);
-                appendMessage('bot', replyText);
-
-                chatHistory.push({
-                    role: "model",
-                    parts: [{ text: replyText }]
-                });
-            } catch (error) {
-                // Nếu chạy bên ngoài Canvas mà chưa gắn API Key, kích hoạt bộ phản hồi thông minh nội bộ để không bao giờ lỗi trắng màn hình
-                removeTypingIndicator(typingId);
-                const fallbackReply = generateSmartFallbackResponse(userText);
-                appendMessage('bot', fallbackReply);
-                chatHistory.push({
-                    role: "model",
-                    parts: [{ text: fallbackReply }]
-                });
-            } finally {
-                isWaitingResponse = false;
-                document.getElementById('send-btn').disabled = false;
-                document.getElementById('chat-input').focus();
-            }
-        }
-
-        async function callGeminiWithRetry(contents, maxRetries = 2) {
-            const apiKey = ""; // Canvas tự động tiêm API Key trong runtime
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-            const payload = {
-                contents: contents,
-                systemInstruction: {
-                    parts: [{ text: SYSTEM_PROMPT }]
-                },
-                generationConfig: {
-                    temperature: 0.7,
-                    maxOutputTokens: 850
-                }
-            };
-
-            let delay = 800;
-            for (let attempt = 0; attempt <= maxRetries; attempt++) {
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}`);
-                    }
-
-                    const result = await response.json();
-                    const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (text) return text;
-                    throw new Error("Empty response");
-                } catch (err) {
-                    if (attempt === maxRetries) throw err;
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    delay *= 2;
-                }
-            }
-        }
-
-        // Bộ xử lý dự phòng thông minh (đảm bảo link chia sẻ luôn trả lời mượt mà kể cả khi mở offline/không có API key)
-        function generateSmartFallbackResponse(query) {
-            const q = query.toLowerCase();
-            // Nhận diện chiều cao/cân nặng
-            const weightMatch = q.match(/(\d{2})\s*kg/);
-            if (weightMatch || q.includes('size')) {
-                const w = weightMatch ? parseInt(weightMatch[1], 10) : null;
-                let sizeAdvice = "Size M (phù hợp 1m56–164cm, 49–54kg)";
-                if (w) {
-                    if (w <= 48) sizeAdvice = "Size S (42–48kg)";
-                    else if (w <= 54) sizeAdvice = "Size M (49–54kg)";
-                    else if (w <= 60) sizeAdvice = "Size L (55–60kg)";
-                    else sizeAdvice = "Size XL (61–68kg)";
-                }
-                return `Với số đo của bạn, Lumina gợi ý bạn chọn **${sizeAdvice}** để mặc lên phom chuẩn và thoải mái nhất ạ ✨\n\nNếu bạn thích phối đồ thanh lịch, bạn có thể tham khảo bộ đôi bán chạy nhất của shop:\n• **SP01** - Áo Sơ Mi Lụa Cổ Đức (480.000đ)\n• **SP02** - Quần Tây Ống Suông Cạp Cao (550.000đ)\n\nShop hỗ trợ **đổi size miễn phí trong 7 ngày** nên bạn hoàn toàn yên tâm nhé! 💕`;
-            }
-            if (q.includes('đi làm') || q.includes('công sở')) {
-                return `Với phong cách đi làm thanh lịch, chuyên nghiệp, Lumina gợi ý cho bạn 2 bản phối cực kỳ tôn dáng:\n\n• **Set 1 (Hiện đại):** Áo Sơ Mi Lụa Cổ Đức (**SP01** - 480.000đ) kết hợp cùng Quần Tây Ống Suông Cạp Cao (**SP02** - 550.000đ).\n• **Set 2 (Quyền lực):** Khoác ngoài Áo Blazer Công Sở Hai Hàng Khuy (**SP04** - 890.000đ) bên trong là Áo Thun Cotton Basic (**SP05** - 250.000đ).\n\nBạn cho mình xin chiều cao và cân nặng để mình kiểm tra size chuẩn cho bạn nhé! ✨`;
-            }
-            if (q.includes('tiệc') || q.includes('dưới 1 triệu')) {
-                return `Nếu bạn tìm trang phục dự tiệc tinh tế với ngân sách **dưới 1 triệu đồng**, mẫu **Váy Midi Hoa Nhí Vintage (SP03 - 620.000đ)** chất liệu voan lụa 2 lớp thướt tha là lựa chọn rất dịu dàng cho tiệc nhẹ hoặc hẹn hò ✨\n\nNgoài ra, nếu bạn muốn thiết kế sang trọng nổi bật cho tiệc tối, bạn có thể tham khảo thêm **Đầm Dạ Hội Lụa Satin Xẻ Tà (SP07 - 1.250.000đ)** (đang được freeship toàn quốc và giảm 10% với mã **LUMINA10**).`;
-            }
-            if (q.includes('đổi trả') || q.includes('chính sách') || q.includes('ship')) {
-                return `Dưới đây là chính sách chăm sóc khách hàng tại **LUMINA FASHION**:\n• **Đổi size miễn phí trong 7 ngày:** Áp dụng cho sản phẩm còn nguyên tem mác, chưa qua giặt ủi.\n• **Giao hàng toàn quốc 2–4 ngày:** Được kiểm tra hàng trước khi thanh toán. **Freeship** cho đơn từ 500.000đ.\n• **Ưu đãi:** Nhập mã **LUMINA10** giảm ngay 10% cho đơn đầu tiên ạ! 🛡️`;
-            }
-            return `Cảm ơn bạn đã nhắn tin cho **LUMINA FASHION** ✨ Hiện tại shop có đầy đủ 8 thiết kế mới từ **SP01** đến **SP08** (áo sơ mi lụa, blazer, quần tây ống suông, váy midi và đầm dạ hội).\n\nBạn hãy cho mình biết **chiều cao, cân nặng** hoặc **dịp bạn chuẩn bị mặc** để mình tư vấn mẫu và size chuẩn nhất nhé! 💕`;
-        }
-
-        // 7. HIỂN THỊ TIN NHẮN & TỰ ĐỘNG NHÚNG PRODUCT CARD KHI NHẮC ĐẾN MÃ SP01-SP08
-        function appendMessage(sender, text) {
-            const container = document.getElementById('chat-messages');
-            const wrapper = document.createElement('div');
-            wrapper.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} items-end gap-2`;
-
-            const formattedHtml = formatChatText(text);
-
-            if (sender === 'user') {
-                wrapper.innerHTML = `
-                    <div class="max-w-[82%] bg-charcoal text-cream px-4 py-2.5 rounded-2xl rounded-br-sm text-xs sm:text-sm leading-relaxed shadow-xs">
-                        ${formattedHtml}
-                    </div>
-                `;
-            } else {
-                // Tìm tất cả mã sản phẩm (SP01 -> SP08) được nhắc đến trong câu trả lời của bot
-                const mentionedIds = [...new Set((text.match(/SP0[1-8]/gi) || []).map(id => id.toUpperCase()))];
-                const matchedProducts = mentionedIds
-                    .map(id => PRODUCTS.find(p => p.id === id))
-                    .filter(Boolean);
-
-                const productCardsHtml = matchedProducts.length > 0 ? `
-                    <div class="mt-2.5 pt-2.5 border-t border-charcoal/10 space-y-2">
-                        <span class="text-[10px] font-semibold uppercase tracking-wider text-brassDark block">Sản phẩm gợi ý trong hội thoại:</span>
-                        ${matchedProducts.map(p => `
-                            <div class="flex items-center gap-2.5 p-2 rounded-xl bg-cream border border-charcoal/10 hover:border-brass transition">
-                                <img src="${p.image}" alt="${p.name}" onerror="this.onerror=null;this.src='https://placehold.co/100x120/EFECE6/1A1A1A?text=${p.id}';" class="w-12 h-14 rounded-lg object-cover shrink-0 bg-sand" />
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="text-[10px] font-bold px-1.5 py-0.2 bg-charcoal text-brass rounded">${p.id}</span>
-                                        <p class="font-semibold text-charcoal text-xs truncate">${p.name}</p>
-                                    </div>
-                                    <p class="text-brassDark font-bold text-xs mt-0.5">${p.price}</p>
-                                    <button onclick="openProductModal('${p.id}')" class="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold text-charcoal underline hover:text-brassDark cursor-pointer">
-                                        <span>Xem chi tiết / Đặt nhanh</span>
-                                        <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                ` : '';
-
-                wrapper.innerHTML = `
-                    <div class="w-7 h-7 rounded-xl bg-charcoal text-brass flex items-center justify-center shrink-0 mb-0.5 border border-brass/40">
-                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                    </div>
-                    <div class="max-w-[85%] bg-white border border-charcoal/10 text-charcoal px-4 py-3 rounded-2xl rounded-bl-sm text-xs sm:text-sm leading-relaxed shadow-xs">
-                        <div class="space-y-1">${formattedHtml}</div>
-                        ${productCardsHtml}
-                    </div>
-                `;
-            }
-
-            container.appendChild(wrapper);
-            lucide.createIcons();
-            scrollToBottom();
-        }
-
-        function formatChatText(raw) {
-            let safe = raw
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;");
-            safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-charcoal">$1</strong>');
-            safe = safe.replace(/^\s*[\*\-]\s+(.*)$/gm, '<div class="flex gap-1.5 items-start"><span class="text-brassDark font-bold">•</span><span>$1</span></div>');
-            safe = safe.replace(/\n/g, '<br/>');
-            safe = safe.replace(/<\/div><br\/>/g, '</div>');
-            return safe;
-        }
-
-        function showTypingIndicator() {
-            const container = document.getElementById('chat-messages');
-            const id = 'typing-' + Date.now();
-            const div = document.createElement('div');
-            div.id = id;
-            div.className = 'flex justify-start items-end gap-2';
-            div.innerHTML = `
-                <div class="w-7 h-7 rounded-xl bg-charcoal text-brass flex items-center justify-center shrink-0 border border-brass/40">
-                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                </div>
-                <div class="bg-white border border-charcoal/10 px-4 py-3 rounded-2xl rounded-bl-sm flex items-center gap-1.5 shadow-xs">
-                    <span class="w-1.5 h-1.5 rounded-full bg-brass dot-1"></span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-brass dot-2"></span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-brass dot-3"></span>
-                </div>
+                <span class="text-[10px] px-2 py-1 rounded bg-[#1A1A1A] text-white shrink-0">Xem</span>
+              </div>
             `;
-            container.appendChild(div);
-            lucide.createIcons();
-            scrollToBottom();
-            return id;
+          }).join('') + `</div>`;
         }
+      }
 
-        function removeTypingIndicator(id) {
-            const el = document.getElementById(id);
-            if (el) el.remove();
+      const formattedText = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br/>');
+
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'} animate-fade-in`;
+      msgDiv.innerHTML = `
+        <div class="max-w-[85%] rounded-2xl px-4 py-3 text-xs sm:text-[13px] leading-relaxed shadow-2xs ${
+          isUser 
+            ? 'bg-[#1A1A1A] text-[#FAF9F6] rounded-br-xs' 
+            : 'bg-white border border-[#E8E4DC] text-[#1A1A1A] rounded-bl-xs'
+        }">
+          <div>${formattedText}</div>
+          ${productCardsHtml}
+        </div>
+      `;
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function showTyping() {
+      const container = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      div.id = 'typingIndicator';
+      div.className = 'flex justify-start animate-fade-in';
+      div.innerHTML = `
+        <div class="bg-white border border-[#E8E4DC] rounded-2xl px-4 py-2.5 text-xs text-gray-500 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 bg-[#C5A059] rounded-full animate-bounce"></span>
+          <span class="w-1.5 h-1.5 bg-[#C5A059] rounded-full animate-bounce" style="animation-delay: 0.15s"></span>
+          <span class="w-1.5 h-1.5 bg-[#C5A059] rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+          <span class="ml-1">Lumina Stylist đang tư vấn...</span>
+        </div>
+      `;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function removeTyping() {
+      const el = document.getElementById('typingIndicator');
+      if (el) el.remove();
+    }
+
+    // Bộ xử lý dự phòng thông minh khi chưa gắn API Key
+    function getOfflineFallbackResponse(userMsg) {
+      const q = userMsg.toLowerCase();
+      
+      // Kiểm tra hỏi size theo cân nặng
+      const weightMatch = q.match(/(\d{2})\s*kg/);
+      if (weightMatch || q.includes('size') || q.includes('cân nặng') || q.includes('chiều cao')) {
+        const w = weightMatch ? parseInt(weightMatch[1]) : 52;
+        let recSize = 'M';
+        if (w <= 48) recSize = 'S';
+        else if (w <= 54) recSize = 'M';
+        else if (w <= 61) recSize = 'L';
+        else recSize = 'XL';
+        return `Dựa trên số đo bạn chia sẻ (${w}kg), Lumina gợi ý bạn chọn **Size ${recSize}** để lên phom chuẩn và thoải mái nhất ạ.\n\nBạn có thể tham khảo các thiết kế bán chạy đang sẵn **Size ${recSize}** tại shop:\n- **[SP01] Áo Blazer Dạ Tweed Kem** (890.000đ) – tôn dáng thanh lịch.\n- **[SP03] Quần Âu Ống Suông Cạp Cao** (560.000đ) – hack dáng cực đỉnh.\n\nBạn muốn Lumina kiểm tra màu sắc cụ thể của mẫu nào không ạ?`;
+      }
+
+      if (q.includes('công sở') || q.includes('đi làm') || q.includes('1.5 triệu') || q.includes('1,5 triệu')) {
+        return `Với phong cách công sở thanh lịch ngân sách dưới 1.5 triệu, Lumina gợi ý cho bạn set đồ Best-seller:\n- **[SP04] Áo Sơ Mi Lụa Tơ Tằm Cổ Nơ** (520.000đ)\n- **[SP03] Quần Âu Ống Suông Cạp Cao** (560.000đ)\n\n👉 **Tổng set đồ:** 1.080.000đ (Được **Freeship toàn quốc**). Bạn cao và nặng bao nhiêu để em chọn size chuẩn cho mình nhé?`;
+      }
+
+      if (q.includes('tiệc') || q.includes('đầm') || q.includes('sang trọng') || q.includes('hẹn hò')) {
+        return `Cho buổi tiệc tối hoặc hẹn hò sang trọng, Lumina gợi ý 2 thiết kế nổi bật nhất:\n- **[SP02] Đầm Lụa Satin Cổ Đổ** (1.150.000đ): Chất lụa rủ mềm bắt sáng cực kỳ quyến rũ.\n- **[SP07] Đầm Hoa Nhí Cổ Vuông Vintage** (680.000đ): Nhẹ nhàng, nữ tính và che khuyết điểm bắp tay tốt.\n\nBạn thích phong cách quyến rũ hay tiểu thư nhẹ nhàng để em tư vấn kỹ hơn ạ?`;
+      }
+
+      if (q.includes('đổi trả') || q.includes('ship') || q.includes('giao hàng') || q.includes('chính sách')) {
+        return `Chính sách chăm sóc khách hàng tại **LUMINA FASHION**:\n- **Giao hàng:** Freeship toàn quốc cho đơn từ **800.000đ** (đơn dưới 800k phí ship đồng giá 25.000đ).\n- **Đổi trả:** Hỗ trợ đổi size hoặc đổi mẫu linh hoạt trong **7 ngày** kể từ khi nhận hàng (còn nguyên tem mác).\n- **Showroom:** 128 Phố Huế, Hai Bà Trưng, Hà Nội.`;
+      }
+
+      const specificSp = PRODUCTS.find(p => q.includes(p.id.toLowerCase()) || q.includes(p.name.toLowerCase()));
+      if (specificSp) {
+        return `Mẫu **[${specificSp.id}] ${specificSp.name}** hiện đang có giá **${formatCurrency(specificSp.price)}** với các màu: ${specificSp.colors.join(', ')}.\n- **Chất liệu:** ${specificSp.material}.\n- **Gợi ý phối đồ:** Rất hợp khi kết hợp cùng **[SP03] Quần Âu Ống Suông** hoặc **[SP05] Chân Váy Midi Xếp Ly**.\n\nBạn cho em xin chiều cao và cân nặng để em check size chuẩn cho mình nhé!`;
+      }
+
+      return `Chào bạn! Lumina AI Stylist rất vui được hỗ trợ bạn. Hiện tại shop đang có bộ sưu tập Thu Đông với các thiết kế nổi bật như **[SP01] Áo Blazer Dạ Tweed**, **[SP02] Đầm Lụa Satin Cổ Đổ** và **[SP03] Quần Âu Ống Suông**.\n\nBạn đang tìm trang phục cho dịp nào (đi làm, đi tiệc, dạo phố) hoặc cần tư vấn size theo chiều cao/cân nặng ạ?`;
+    }
+
+    async function callGeminiAPI(userMessage) {
+      if (!GEMINI_API_KEY) {
+        await new Promise(r => setTimeout(r, 650));
+        return getOfflineFallbackResponse(userMessage);
+      }
+
+      chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
+
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+              contents: chatHistory,
+              generationConfig: { temperature: 0.7, maxOutputTokens: 500 }
+            })
+          }
+        );
+
+        const data = await response.json();
+        if (data.error) {
+          console.warn("API Error, falling back:", data.error);
+          return getOfflineFallbackResponse(userMessage);
         }
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || getOfflineFallbackResponse(userMessage);
+        chatHistory.push({ role: "model", parts: [{ text: reply }] });
+        return reply;
+      } catch (err) {
+        return getOfflineFallbackResponse(userMessage);
+      }
+    }
 
-        function scrollToBottom() {
-            const container = document.getElementById('chat-messages');
-            container.scrollTop = container.scrollHeight;
-        }
+    async function handleChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if (!text) return;
 
-        // 8. MODAL HỒ SƠ DỰ ÁN, BẢNG DỮ LIỆU & HƯỚNG DẪN XUẤT BẢN LINK
-        function renderModalDataTable() {
-            const tbody = document.getElementById('modal-data-table');
-            tbody.innerHTML = PRODUCTS.map(p => `
-                <tr class="hover:bg-cream/60">
-                    <td class="py-2.5 px-3 font-bold text-charcoal">${p.id}</td>
-                    <td class="py-2.5 px-3 font-medium text-charcoal">${p.name}</td>
-                    <td class="py-2.5 px-3 text-brassDark font-semibold">${p.price}</td>
-                    <td class="py-2.5 px-3">${p.sizes.join(', ')}</td>
-                    <td class="py-2.5 px-3 text-charcoal/70">${p.material} (${p.colors.join(', ')})</td>
-                </tr>
-            `).join('');
-        }
+      input.value = '';
+      appendMessage('user', text);
+      showTyping();
 
-        function openConfigModal(defaultTab = 'prompt') {
-            document.getElementById('config-modal').classList.remove('hidden');
-            switchModalTab(defaultTab);
-        }
+      const reply = await callGeminiAPI(text);
+      removeTyping();
+      appendMessage('bot', reply);
+    }
 
-        function closeConfigModal() {
-            document.getElementById('config-modal').classList.add('hidden');
-        }
+    function sendQuickPrompt(text) {
+      document.getElementById('userInput').value = text;
+      handleChatSubmit(new Event('submit'));
+    }
 
-        function switchModalTab(tabName) {
-            ['prompt', 'data', 'deploy'].forEach(t => {
-                const content = document.getElementById(`tab-content-${t}`);
-                const btn = document.getElementById(`tab-btn-${t}`);
-                if (t === tabName) {
-                    content.classList.remove('hidden');
-                    btn.className = "modal-tab-btn px-4 py-2.5 text-xs font-semibold border-b-2 border-charcoal text-charcoal transition cursor-pointer";
-                } else {
-                    content.classList.add('hidden');
-                    btn.className = "modal-tab-btn px-4 py-2.5 text-xs font-medium border-b-2 border-transparent text-charcoal/60 hover:text-charcoal transition cursor-pointer";
-                }
-            });
-            lucide.createIcons();
-        }
+    function resetChat() {
+      chatHistory = [];
+      document.getElementById('chatMessages').innerHTML = '';
+      appendMessage('bot', 'Xin chào! Em là **Lumina AI Stylist** ✨. Em có thể giúp chị chọn size chuẩn theo chiều cao/cân nặng, gợi ý phối đồ đi làm – dự tiệc hoặc kiểm tra thông tin sản phẩm của shop. Chị đang quan tâm đến mẫu nào ạ?');
+    }
 
-        function copyPromptText() {
-            const textarea = document.createElement('textarea');
-            textarea.value = SYSTEM_PROMPT;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
+    // =========================================================================
+    // 6. QUẢN LÝ MODAL & KHỞI TẠO
+    // =========================================================================
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+    function saveApiKey() {
+      const val = document.getElementById('apiKeyInput').value.trim();
+      GEMINI_API_KEY = val;
+      localStorage.setItem("lumina_gemini_key", val);
+      updateApiIndicator();
+      closeModal('apiModal');
+      alert(val ? "Đã lưu Gemini API Key thành công!" : "Đã chuyển sang chế độ Demo Offline.");
+    }
+    function updateApiIndicator() {
+      const dot = document.getElementById('apiStatusDot');
+      if (GEMINI_API_KEY) {
+        dot.classList.remove('bg-amber-500');
+        dot.classList.add('bg-emerald-500');
+      } else {
+        dot.classList.remove('bg-emerald-500');
+        dot.classList.add('bg-amber-500');
+      }
+    }
 
-            const btn = document.getElementById('copy-btn');
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Đã sao chép!</span>`;
-            lucide.createIcons();
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                lucide.createIcons();
-            }, 2000);
-        }
-    </script>
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderProducts('ALL');
+      resetChat();
+      updateApiIndicator();
+      document.getElementById('apiKeyInput').value = GEMINI_API_KEY;
+      document.getElementById('promptPreview').textContent = SYSTEM_PROMPT;
+    });
+  </script>
 </body>
 </html>
